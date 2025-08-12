@@ -49,13 +49,23 @@ local function handle_chat_event(message, sender)
 	end
 end
 
-local function handle_event(self, event, arg1, arg2)
+local function handle_event(self, event, ...)
 	if event == "CHAT_MSG_PARTY"
 		or event == "CHAT_MSG_PARTY_LEADER"
 		or event == "CHAT_MSG_RAID"
 		or event == "CHAT_MSG_RAID_LEADER"
 		or event == "CHAT_MSG_WHISPER" then
-		handle_chat_event(arg1, arg2)
+		local message, sender = ...
+		handle_chat_event(message, sender)
+	elseif event == "PARTY_INVITE_REQUEST" then
+		local leader = ...
+		for i = 1, GetNumFriends() do
+			local name, lvl, class, location, online, status, note = GetFriendInfo(i)
+			if name == leader then
+				AcceptGroup()
+				return
+			end
+		end
 	end
 end
 
@@ -67,6 +77,7 @@ local function initialize_handlers(self, event)
 	AddonFrame:RegisterEvent("CHAT_MSG_RAID")
 	AddonFrame:RegisterEvent("CHAT_MSG_RAID_LEADER")
 	AddonFrame:RegisterEvent("CHAT_MSG_WHISPER")
+	AddonFrame:RegisterEvent("PARTY_INVITE_REQUEST")
 	-- message("AcceptEverything addon loaded")
 	local message = "AcceptEverything addon has been successfully loaded"
 	local message_id = 12345 -- message_id can be any number, right?
