@@ -14,11 +14,18 @@ end
 
 local function mount()
 	for i = 1, GetNumCompanions("MOUNT") do
-		local id, name, spell, icon, summoned = GetCompanionInfo("MOUNT", i)
-		-- if not summoned then
-		CallCompanion("MOUNT", i)
-		return
-		-- end
+		local id, name, spell, icon, summoned, type = GetCompanionInfo("MOUNT", i)
+		if IsFlyableArea() and (type == 15 or type == 31) then
+			CallCompanion("MOUNT", i)
+			return
+		end
+	end
+	for i = 1, GetNumCompanions("MOUNT") do
+		local id, name, spell, icon, summoned, type = GetCompanionInfo("MOUNT", i)
+		if type == 12 or type == 29 then
+			CallCompanion("MOUNT", i)
+			return
+		end
 	end
 end
 
