@@ -22,11 +22,12 @@ local function mount()
 	end
 	for i = 1, GetNumCompanions("MOUNT") do
 		local id, name, spell, icon, summoned, type = GetCompanionInfo("MOUNT", i)
-		if type == 12 or type == 29 then
+		if type == nil or type == 12 or type == 29 then
 			CallCompanion("MOUNT", i)
 			return
 		end
 	end
+	UIErrorsFrame:AddMessage("No mount found", 1.0, 0.0, 0.0, 123, 30)
 end
 
 local function handle_chat_event(message, sender)
@@ -45,7 +46,7 @@ local function handle_chat_event(message, sender)
 		Dismount()
 	elseif cmd == "lets" or cmd == "let's" then
 		-- TODO: check if emote exists
-		DoEmote(arg, "none");
+		DoEmote(arg, "none")
 	end
 end
 
@@ -82,11 +83,12 @@ local function initialize_handlers(self, event)
 	local message = "AcceptEverything addon has been successfully loaded"
 	local message_id = 12345 -- message_id can be any number, right?
 	local message_duration = 60 -- I think this parameter is just ignored
-	UIErrorsFrame:AddMessage(message,
+	UIErrorsFrame:AddMessage(
+		message,
 		1.0, 1.0, 1.0,
 		message_id,
 		message_duration
-	);
+	)
 end
 
 AddonFrame:SetScript("OnEvent", initialize_handlers)
