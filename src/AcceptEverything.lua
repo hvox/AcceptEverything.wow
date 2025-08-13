@@ -42,7 +42,7 @@ local function handle_chat_event(message, sender)
 		FollowUnit("player")
 	elseif cmd == "mount" and arg == "" then
 		mount()
-	elseif (cmd == "dismount" or cmd == "unmount") and arg == "" then
+	elseif (cmd == "dismount" or cmd == "unmount" or cmd == "umount") and arg == "" then
 		Dismount()
 	elseif cmd == "lets" or cmd == "let's" then
 		-- TODO: check if emote exists
