@@ -13,21 +13,34 @@ local function trim(s)
 end
 
 local function mount()
+	local slow_ground = nil
+	local fast_ground = nil
+	local slow_flying = nil
+	local fast_flying = nil
 	for i = 1, GetNumCompanions("MOUNT") do
 		local id, name, spell, icon, summoned, type = GetCompanionInfo("MOUNT", i)
-		if IsFlyableArea() and (type == 15 or type == 31) then
-			CallCompanion("MOUNT", i)
-			return
+		name = name:lower()
+		if name:find("drake") then
+			fast_flying = i
+		elseif name:find("wind") or name:find("gryphon") then
+			slow_flying = i
+		elseif name:find("swift") then
+			fast_ground = i
+		else
+			slow_ground = i
 		end
 	end
-	for i = 1, GetNumCompanions("MOUNT") do
-		local id, name, spell, icon, summoned, type = GetCompanionInfo("MOUNT", i)
-		if type == nil or type == 12 or type == 29 then
-			CallCompanion("MOUNT", i)
-			return
-		end
+	local mount = fast_flying or slow_flying or fast_ground or slow_ground
+	if not IsFlyableArea() then
+		mount = fast_ground or slow_ground
 	end
-	UIErrorsFrame:AddMessage("No mount found", 1.0, 0.0, 0.0, 123, 30)
+	if mount ~= nil then
+		local id, name, spell, icon, summoned, type = GetCompanionInfo("MOUNT", mount)
+		UIErrorsFrame:AddMessage("Mount: " .. name, 1.0, 1.0, 1.0, 124, 30)
+		CallCompanion("MOUNT", mount)
+	else
+		UIErrorsFrame:AddMessage("No mount found", 1.0, 0.0, 0.0, 123, 30)
+	end
 end
 
 local function handle_chat_event(message, sender)
