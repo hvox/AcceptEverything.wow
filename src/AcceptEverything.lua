@@ -64,7 +64,9 @@ local function handle_chat_event(message, sender)
 end
 
 local function handle_event(self, event, ...)
-	if event == "CHAT_MSG_PARTY"
+	if event == "RESURRECT_REQUEST" then
+		AcceptResurrect(UnitName("player"))
+	elseif event == "CHAT_MSG_PARTY"
 		or event == "CHAT_MSG_PARTY_LEADER"
 		or event == "CHAT_MSG_RAID"
 		or event == "CHAT_MSG_RAID_LEADER"
@@ -86,6 +88,7 @@ end
 local function initialize_handlers(self, event)
 	AddonFrame:UnregisterEvent("PLAYER_LOGIN")
 	AddonFrame:SetScript("OnEvent", handle_event)
+	AddonFrame:RegisterEvent("RESURRECT_REQUEST")
 	AddonFrame:RegisterEvent("CHAT_MSG_PARTY")
 	AddonFrame:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 	AddonFrame:RegisterEvent("CHAT_MSG_RAID")
