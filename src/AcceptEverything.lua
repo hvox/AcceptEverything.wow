@@ -7,9 +7,15 @@
 ]]
 
 local AddonFrame = CreateFrame("Frame")
+local AddonName = "AcceptEverything"
 
 local function trim(s)
 	return s:match("^%s*(.-)%s*$")
+end
+
+local function log_accept(action_name)
+	local message = action_name .. " auto-accepted by " .. AddonName
+	UIErrorsFrame:AddMessage(message, 1.0, 1.0, 1.0, 132, 5)
 end
 
 local function mount()
@@ -36,7 +42,7 @@ local function mount()
 	end
 	if mount ~= nil then
 		local id, name, spell, icon, summoned, type = GetCompanionInfo("MOUNT", mount)
-		UIErrorsFrame:AddMessage("Mount: " .. name, 1.0, 1.0, 1.0, 124, 30)
+		log_accept("Mounting on " .. name)
 		CallCompanion("MOUNT", mount)
 	else
 		UIErrorsFrame:AddMessage("No mount found", 1.0, 0.0, 0.0, 123, 30)
@@ -48,24 +54,30 @@ local function handle_chat_event(message, sender)
 	cmd = cmd:lower()
 	if cmd == "follow" and (arg == "" or arg == "me") then
 		FollowUnit(sender)
+		log_accept("Follow request")
 	elseif cmd == "follow" and arg ~= "" then
 		-- TODO: fuzy search in party
 		FollowUnit(arg)
+		log_accept("Follow request")
 	elseif (cmd == "unfollow" or cmd == "stop") and arg == "" then
 		FollowUnit("player")
+		log_accept("Stop request")
 	elseif cmd == "mount" and arg == "" then
 		mount()
 	elseif (cmd == "dismount" or cmd == "unmount" or cmd == "umount") and arg == "" then
 		Dismount()
+		log_accept("Dismount")
 	elseif cmd == "lets" or cmd == "let's" then
 		-- TODO: check if emote exists
 		DoEmote(arg, "none")
+		log_accept("Emote")
 	end
 end
 
 local function handle_event(self, event, ...)
 	if event == "RESURRECT_REQUEST" then
 		AcceptResurrect(UnitName("player"))
+		log_accept("Resurrection")
 	elseif event == "CHAT_MSG_PARTY"
 		or event == "CHAT_MSG_PARTY_LEADER"
 		or event == "CHAT_MSG_RAID"
@@ -76,9 +88,10 @@ local function handle_event(self, event, ...)
 	elseif event == "PARTY_INVITE_REQUEST" then
 		local leader = ...
 		for i = 1, GetNumFriends() do
-			local name, lvl, class, location, online, status, note = GetFriendInfo(i)
-			if name == leader then
+			local friend, lvl, class, location, online, status, note = GetFriendInfo(i)
+			if leader == friend then
 				AcceptGroup()
+				log_accept("Party invite")
 				return
 			end
 		end
