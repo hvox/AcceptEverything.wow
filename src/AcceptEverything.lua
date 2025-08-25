@@ -76,8 +76,9 @@ end
 
 local function handle_event(self, event, ...)
 	if event == "RESURRECT_REQUEST" then
+		local inviter = ...
 		AcceptResurrect(UnitName("player"))
-		log_accept("Resurrection")
+		log_accept("Resurrection by " .. inviter)
 	elseif event == "CHAT_MSG_PARTY"
 		or event == "CHAT_MSG_PARTY_LEADER"
 		or event == "CHAT_MSG_RAID"
