@@ -94,7 +94,8 @@ local function handle_event(self, event, ...)
 			local friend, lvl, class, location, online, status, note = GetFriendInfo(i)
 			if leader == friend then
 				AcceptGroup()
-				log_accept("Party invite")
+				log_accept("Party invite by " .. leader)
+				print("Invited into party by " .. leader)
 				return
 			end
 		end
