@@ -79,6 +79,8 @@ local function handle_event(self, event, ...)
 		local inviter = ...
 		AcceptResurrect(UnitName("player"))
 		log_accept("Resurrection by " .. inviter)
+	elseif event == "TRADE_REQUEST" then
+		print("Trade requested by " .. ...)
 	elseif event == "CHAT_MSG_PARTY"
 		or event == "CHAT_MSG_PARTY_LEADER"
 		or event == "CHAT_MSG_RAID"
@@ -109,6 +111,7 @@ local function initialize_handlers(self, event)
 	AddonFrame:RegisterEvent("CHAT_MSG_RAID_LEADER")
 	AddonFrame:RegisterEvent("CHAT_MSG_WHISPER")
 	AddonFrame:RegisterEvent("PARTY_INVITE_REQUEST")
+	AddonFrame:RegisterEvent("TRADE_REQUEST")
 	-- message("AcceptEverything addon loaded")
 	local message = "AcceptEverything addon has been successfully loaded"
 	local message_id = 12345 -- message_id can be any number, right?
